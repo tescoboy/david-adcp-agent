@@ -19,6 +19,10 @@ async function handleMcpRequest(
     });
   }
 
+  // Log request body for debugging (clone so transport can still read it)
+  const bodyText = await req.clone().text().catch(() => '');
+  console.log('[MCP]', req.method, tenantId, bodyText);
+
   const server = createMcpServer(tenantId);
   // Stateless mode: sessionIdGenerator is undefined so no session tracking
   const transport = new WebStandardStreamableHTTPServerTransport({
