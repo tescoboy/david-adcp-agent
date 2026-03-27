@@ -23,6 +23,14 @@ async function handleMcpRequest(
   const bodyText = await req.clone().text().catch(() => '');
   console.log('[MCP]', req.method, tenantId, bodyText);
 
+  // Deep-log update_media_buy arguments before SDK touches them
+  try {
+    const parsed = JSON.parse(bodyText);
+    if (parsed?.params?.name === 'update_media_buy') {
+      console.log('[PRE-ZOD update_media_buy]', JSON.stringify(parsed.params.arguments, null, 2));
+    }
+  } catch {}
+
   const server = createMcpServer(tenantId);
   // Stateless mode: sessionIdGenerator is undefined so no session tracking
   const transport = new WebStandardStreamableHTTPServerTransport({
