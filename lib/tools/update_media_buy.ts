@@ -72,6 +72,6 @@ export async function handleUpdateMediaBuy(tenantId: string, input: UpdateInput)
 
   return {
     content: [{ type: 'text' as const, text: JSON.stringify(mediaBuy) }],
-    structuredContent: { media_buy: mediaBuy },
+    structuredContent: mediaBuy as unknown as Record<string, unknown>,
   };
 }
