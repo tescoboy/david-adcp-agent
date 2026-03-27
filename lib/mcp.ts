@@ -74,7 +74,7 @@ export function createMcpServer(tenantId: string): McpServer {
   const packageUpdateSchema = z.object({
     package_id: z.string(),
     paused: z.boolean().optional(),
-    canceled: z.literal(true).optional(),
+    canceled: z.boolean().optional(),
     cancellation_reason: z.string().optional(),
     budget: z.number().optional(),
     start_time: z.string().optional(),
@@ -90,7 +90,7 @@ export function createMcpServer(tenantId: string): McpServer {
       inputSchema: {
         media_buy_id: z.string(),
         paused: z.boolean().optional(),
-        canceled: z.literal(true).optional(),
+        canceled: z.boolean().optional(),
         cancellation_reason: z.string().optional(),
         packages: z.array(packageUpdateSchema).optional(),
         new_packages: z.array(z.any()).optional(),

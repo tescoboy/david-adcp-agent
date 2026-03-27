@@ -5,8 +5,8 @@ import type { AdcpMediaBuy, AdcpPackage } from '../schemas';
 interface UpdateInput {
   media_buy_id: string;
   paused?: boolean;
-  canceled?: true;
-  packages?: Array<{ package_id: string; paused?: boolean; canceled?: true; budget?: number }>;
+  canceled?: boolean;
+  packages?: Array<{ package_id: string; paused?: boolean; canceled?: boolean; budget?: number }>;
   [key: string]: unknown;
 }
 
