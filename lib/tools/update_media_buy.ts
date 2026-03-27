@@ -12,6 +12,15 @@ interface UpdateInput {
 
 export async function handleUpdateMediaBuy(tenantId: string, input: UpdateInput) {
   console.log('[update_media_buy] input:', JSON.stringify(input));
+  try {
+    return await _handleUpdateMediaBuy(tenantId, input);
+  } catch (err) {
+    console.error('[update_media_buy] UNCAUGHT ERROR:', err);
+    throw err;
+  }
+}
+
+async function _handleUpdateMediaBuy(tenantId: string, input: UpdateInput) {
   const result = await getMediaBuy(tenantId, input.media_buy_id);
   if (!result) {
     return adcpError('MEDIA_BUY_NOT_FOUND', {
