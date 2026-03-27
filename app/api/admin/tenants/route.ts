@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { NextRequest } from 'next/server';
 import { db, insertTenant, insertProduct } from '@/lib/db';
 import { SEED_PRODUCTS } from '@/lib/seeds';
@@ -25,8 +27,9 @@ export async function POST(req: NextRequest) {
       mcp_url: `${baseUrl}/api/${tenantId}/mcp`,
     });
   } catch (err) {
-    console.error('Error creating tenant:', err);
-    return Response.json({ error: 'Internal server error' }, { status: 500 });
+    const msg = err instanceof Error ? err.message : String(err);
+    console.error('Error creating tenant:', msg);
+    return Response.json({ error: msg }, { status: 500 });
   }
 }
 

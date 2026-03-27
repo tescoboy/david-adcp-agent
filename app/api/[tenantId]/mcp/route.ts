@@ -1,3 +1,5 @@
+export const dynamic = 'force-dynamic';
+
 import { WebStandardStreamableHTTPServerTransport } from '@modelcontextprotocol/sdk/server/webStandardStreamableHttp.js';
 import { queryTenant } from '@/lib/db';
 import { createMcpServer } from '@/lib/mcp';
