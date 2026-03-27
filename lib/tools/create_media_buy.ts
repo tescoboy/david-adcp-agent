@@ -74,8 +74,8 @@ export async function handleCreateMediaBuy(tenantId: string, input: CreateInput)
   // Build media buy
   const mediaBuyId = `mb-${crypto.randomUUID()}`;
   const now = new Date().toISOString();
-  const packages: AdcpPackage[] = input.packages.map((pkg) => ({
-    package_id: crypto.randomUUID(),
+  const packages: AdcpPackage[] = input.packages.map((pkg, i) => ({
+    package_id: `pkg-${i}`,
     product_id: pkg.product_id,
     budget: pkg.budget,
     pricing_option_id: pkg.pricing_option_id,
