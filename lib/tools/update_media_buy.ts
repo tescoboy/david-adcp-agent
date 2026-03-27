@@ -70,6 +70,7 @@ export async function handleUpdateMediaBuy(tenantId: string, input: UpdateInput)
   mediaBuy.updated_at = new Date().toISOString();
   await updateMediaBuy(input.media_buy_id, mediaBuy, isCanceled);
 
+  console.log('[update_media_buy] response:', JSON.stringify(mediaBuy));
   return {
     content: [{ type: 'text' as const, text: JSON.stringify(mediaBuy) }],
     structuredContent: mediaBuy as unknown as Record<string, unknown>,
