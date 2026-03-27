@@ -97,15 +97,23 @@ export function createMcpServer(tenantId: string): McpServer {
 
   server.registerTool(
     'update_media_buy',
-    { description: 'Updates an existing media buy' },
+    {
+      description: 'Updates an existing media buy',
+      inputSchema: {
+        media_buy_id: z.string(),
+        paused: z.boolean().optional(),
+        canceled: z.boolean().optional(),
+        cancellation_reason: z.string().optional(),
+        packages: z.array(packageUpdateSchema).optional(),
+        new_packages: z.array(z.any()).optional(),
+        start_time: z.string().optional(),
+        end_time: z.string().optional(),
+        revision: z.number().optional(),
+      },
+    },
     async (args) => {
-      console.log('[update_media_buy] raw args:', JSON.stringify(args));
-      const parsed = updateMediaBuySchema.safeParse(args);
-      if (!parsed.success) {
-        console.log('[update_media_buy] zod errors:', JSON.stringify(parsed.error.issues));
-        return { content: [{ type: 'text' as const, text: JSON.stringify({ _debug_zod_error: parsed.error.issues }) }] };
-      }
-      return handleUpdateMediaBuy(tenantId, parsed.data as never);
+      console.log('[update_media_buy] args:', JSON.stringify(args));
+      return handleUpdateMediaBuy(tenantId, args as never);
     }
   );
 
