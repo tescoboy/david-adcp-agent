@@ -79,9 +79,15 @@ async function _handleUpdateMediaBuy(tenantId: string, input: UpdateInput) {
   mediaBuy.updated_at = new Date().toISOString();
   await updateMediaBuy(input.media_buy_id, mediaBuy, isCanceled);
 
-  console.log('[update_media_buy] response:', JSON.stringify(mediaBuy));
+  const response = {
+    media_buy_id: mediaBuy.media_buy_id,
+    status: mediaBuy.status,
+    revision: mediaBuy.revision,
+    affected_packages: mediaBuy.packages,
+  };
+  console.log('[update_media_buy] response:', JSON.stringify(response));
   return {
-    content: [{ type: 'text' as const, text: JSON.stringify(mediaBuy) }],
-    structuredContent: mediaBuy as unknown as Record<string, unknown>,
+    content: [{ type: 'text' as const, text: JSON.stringify(response) }],
+    structuredContent: response as unknown as Record<string, unknown>,
   };
 }
