@@ -1,4 +1,4 @@
-import { adcpError, mediaBuyResponse } from '@adcp/client';
+import { adcpError } from '@adcp/client';
 import { getProduct, insertMediaBuy } from '../db';
 import type { AdcpMediaBuy, AdcpPackage } from '../schemas';
 
@@ -11,7 +11,7 @@ interface PackageInput {
 
 interface CreateInput {
   packages?: PackageInput[] | null;
-  start_time?: string | null;
+  start_time?: string | { immediate?: boolean } | null;
   end_time?: string | null;
   brand?: { domain?: string } | null;
   [key: string]: unknown;
@@ -23,8 +23,8 @@ export async function handleCreateMediaBuy(tenantId: string, input: CreateInput)
     return adcpError('INVALID_REQUEST', { message: 'packages array is required and must not be empty' });
   }
 
-  // Validation step 2: end_time must be after start_time (if both provided)
-  if (input.start_time && input.end_time) {
+  // Validation step 2: end_time must be after start_time (if both are strings)
+  if (typeof input.start_time === 'string' && typeof input.end_time === 'string') {
     if (new Date(input.end_time) <= new Date(input.start_time)) {
       return adcpError('INVALID_REQUEST', { message: 'end_time must be after start_time' });
     }
@@ -34,7 +34,7 @@ export async function handleCreateMediaBuy(tenantId: string, input: CreateInput)
   for (const pkg of input.packages) {
     if (!pkg.budget || pkg.budget <= 0) {
       return adcpError('BUDGET_TOO_LOW', {
-        message: `Package budget must be greater than 0`,
+        message: 'Package budget must be greater than 0',
         field: 'packages[].budget',
       });
     }
@@ -89,5 +89,8 @@ export async function handleCreateMediaBuy(tenantId: string, input: CreateInput)
 
   await insertMediaBuy(tenantId, mediaBuyId, mediaBuy);
 
-  return mediaBuyResponse(mediaBuy as never);
+  return {
+    content: [{ type: 'text' as const, text: JSON.stringify(mediaBuy) }],
+    structuredContent: mediaBuy as unknown as Record<string, unknown>,
+  };
 }
