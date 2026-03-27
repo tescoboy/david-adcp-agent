@@ -38,6 +38,7 @@ export interface AdcpMediaBuy {
   status: MediaBuyStatus;
   total_budget: number;
   packages: AdcpPackage[];
+  revision: number;
   confirmed_at?: string;
   created_at?: string;
   updated_at?: string;

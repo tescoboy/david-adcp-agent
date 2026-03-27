@@ -51,14 +51,22 @@ export async function handleCreateMediaBuy(tenantId: string, input: CreateInput)
     }
 
     // Validation step 5: each package.pricing_option_id exists on that product
-    const pricingOptions = product.pricing_options as Array<{ pricing_option_id: string }>;
-    const validPricingOption = pricingOptions?.some(
+    const pricingOptions = product.pricing_options as Array<{ pricing_option_id: string; min_spend_per_package?: number }>;
+    const matchedPricingOption = pricingOptions?.find(
       (po) => po.pricing_option_id === pkg.pricing_option_id
     );
-    if (!validPricingOption) {
+    if (!matchedPricingOption) {
       return adcpError('INVALID_REQUEST', {
         message: `Pricing option '${pkg.pricing_option_id}' not found on product '${pkg.product_id}'`,
         field: 'packages[].pricing_option_id',
+      });
+    }
+
+    // Validation step 6: budget meets min_spend_per_package
+    if (matchedPricingOption.min_spend_per_package && pkg.budget < matchedPricingOption.min_spend_per_package) {
+      return adcpError('BUDGET_BELOW_MINIMUM', {
+        message: `Package budget $${pkg.budget} is below the minimum spend of $${matchedPricingOption.min_spend_per_package} for product '${pkg.product_id}'`,
+        field: 'packages[].budget',
       });
     }
   }
@@ -82,6 +90,7 @@ export async function handleCreateMediaBuy(tenantId: string, input: CreateInput)
     status: 'pending_activation',
     total_budget: totalBudget,
     packages,
+    revision: 1,
     confirmed_at: now,
     created_at: now,
     updated_at: now,

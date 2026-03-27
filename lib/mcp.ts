@@ -75,7 +75,12 @@ export function createMcpServer(tenantId: string): McpServer {
     package_id: z.string(),
     paused: z.boolean().optional(),
     canceled: z.literal(true).optional(),
+    cancellation_reason: z.string().optional(),
     budget: z.number().optional(),
+    start_time: z.string().optional(),
+    end_time: z.string().optional(),
+    creative_assignments: z.array(z.any()).optional(),
+    targeting_overlay: z.any().optional(),
   }).passthrough();
 
   server.registerTool(
@@ -86,9 +91,12 @@ export function createMcpServer(tenantId: string): McpServer {
         media_buy_id: z.string(),
         paused: z.boolean().optional(),
         canceled: z.literal(true).optional(),
-        cancellation_reason: z.string().optional().nullable(),
-        packages: z.array(packageUpdateSchema).optional().nullable(),
-        end_time: z.string().optional().nullable(),
+        cancellation_reason: z.string().optional(),
+        packages: z.array(packageUpdateSchema).optional(),
+        new_packages: z.array(z.any()).optional(),
+        start_time: z.string().optional(),
+        end_time: z.string().optional(),
+        revision: z.number().optional(),
       },
     },
     async (args) => handleUpdateMediaBuy(tenantId, args as never)

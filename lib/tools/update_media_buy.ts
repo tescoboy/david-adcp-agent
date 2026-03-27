@@ -65,6 +65,7 @@ export async function handleUpdateMediaBuy(tenantId: string, input: UpdateInput)
     mediaBuy.total_budget = mediaBuy.packages.reduce((sum, p) => sum + (p.budget ?? 0), 0);
   }
 
+  mediaBuy.revision = (mediaBuy.revision ?? 1) + 1;
   mediaBuy.updated_at = new Date().toISOString();
   await updateMediaBuy(input.media_buy_id, mediaBuy, isCanceled);
 
